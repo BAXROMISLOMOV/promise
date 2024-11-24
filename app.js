@@ -145,3 +145,32 @@ document.getElementById('fetchImages').addEventListener('click', () => {
         });
 });
 
+document.getElementById('fetchComments').addEventListener('click', () => {
+    const commentsContainer = document.getElementById('commentsContainer');
+    commentsContainer.innerHTML = '<p>Loading comments...</p>';
+
+    fetch('https://jsonplaceholder.typicode.com/comments')
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch comments');
+            }
+            return response.json();
+        })
+        .then((comments) => {
+            commentsContainer.innerHTML = ''; // Clear loading message
+            comments.slice(0, 10).forEach((comment) => { // Limit to 10 comments
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment';
+                commentDiv.innerHTML = `
+                    <h3>${comment.name}</h3>
+                    <p>${comment.body}</p>
+                    <span>By: ${comment.email}</span>
+                `;
+                commentsContainer.appendChild(commentDiv);
+            });
+        })
+        .catch((error) => {
+            commentsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+        });
+});
+
